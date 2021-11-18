@@ -1,8 +1,8 @@
 package com.dmifed.billoperation;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.context.annotation.Primary;
 
 import javax.persistence.*;
 
@@ -11,11 +11,11 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "users")
-public class User {
+public class UserAccount {
     @Id
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @Getter
     @Column(nullable = false)
@@ -26,12 +26,14 @@ public class User {
     @Column(unique = true)
     private String email;
 
-    public User(String name) {
+    public UserAccount(String name) {
         this(name, null);
     }
 
-    public User(String name, String email) {
+    public UserAccount(String name, String email) {
         this.name = name;
         this.email = email;
     }
+
+    protected UserAccount(){}
 }
