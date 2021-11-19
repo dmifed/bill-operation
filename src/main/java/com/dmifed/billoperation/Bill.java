@@ -19,20 +19,16 @@ public class Bill {
 
     @Column(nullable = false)
     @Getter
-    private long  userAccountId;
+    private long  accountId;
 
     @Getter
     @Setter
     @Column
     private long balance;
 
-    public Bill(long  userAccountId, long balance) {
-        this.userAccountId = userAccountId;
-        this.balance = balance;
-    }
-
-    public Bill(long  userAccountId) {
-        this(userAccountId, 0L);
+    public Bill(long  accountId) {
+        this.accountId = accountId;
+        this.balance = 0L;
     }
 
     protected Bill(){}
