@@ -15,7 +15,11 @@ public class Bill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
-    private long number;
+    private long billId;
+
+    @Column(nullable = false)
+    @Getter
+    private long  number;
 
     @Column(nullable = false)
     @Getter
@@ -26,7 +30,8 @@ public class Bill {
     @Column
     private long balance;
 
-    public Bill(long  accountId) {
+    public Bill(long number, long  accountId) {
+        this.number = number;
         this.accountId = accountId;
         this.balance = 0L;
     }

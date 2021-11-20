@@ -1,6 +1,7 @@
 package com.dmifed.billoperation;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,13 +22,20 @@ public class AccountController {
     @Transactional(isolation = Isolation.READ_COMMITTED,
             propagation = Propagation.REQUIRED,
             rollbackFor = RollbackException.class)
-    public String create(@RequestParam String name){
-        Account account = new Account(name);
+    public String create(@RequestParam String name, @RequestParam(required = false) String email){
+        Account account;
+        if(email != null){
+            account = new Account(name, email);
+        }else {
+            account = new Account(name);
+        }
         accountCrudRepository.save(account);
         return "creation success";
     }
 
-    @PostMapping("/account/{accountId}/update")
+
+
+    @PostMapping("/account/update/{accountId}/")
     @Transactional(isolation = Isolation.READ_COMMITTED,
             propagation = Propagation.REQUIRED,
             rollbackFor = RollbackException.class)
@@ -45,13 +53,12 @@ public class AccountController {
         return accountCrudRepository.findById(accountId).orElseThrow(NoSuchElementException::new);
     }
 
-    @GetMapping("/account/{accountId}/delete")
+    @GetMapping("/account/delete/{accountId}")
     @Transactional(isolation = Isolation.READ_COMMITTED,
             propagation = Propagation.REQUIRED,
             rollbackFor = RollbackException.class)
     public String delete (@PathVariable long accountId){
         accountCrudRepository.deleteById(accountId);
-        return "account has been deleted";
+        return "account #"+ accountId + " has been deleted";
     }
-
 }

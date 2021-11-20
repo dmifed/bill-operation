@@ -21,7 +21,7 @@ public class BillOperationController {
     @Autowired
     private AccountCrudRepository accountCrudRepository;
 
-    @GetMapping("/bill-operations/{billId}/withdrawal")
+    @GetMapping("/bill/withdrawal/{billId}/")
     @Transactional(isolation = Isolation.READ_COMMITTED,
             propagation = Propagation.REQUIRED,
             rollbackFor = RollbackException.class)
@@ -32,10 +32,9 @@ public class BillOperationController {
             bill.setBalance(balance-amount);
         }
         return bill;
-
     }
 
-    @GetMapping("/bill-operations/{billId}/refill")
+    @GetMapping("/bill/refill/{billId}/")
     @Transactional(isolation = Isolation.READ_COMMITTED,
             propagation = Propagation.REQUIRED,
             rollbackFor = RollbackException.class)
@@ -49,14 +48,14 @@ public class BillOperationController {
     @Transactional(isolation = Isolation.READ_COMMITTED,
             propagation = Propagation.REQUIRED,
             rollbackFor = RollbackException.class)
-    public String create(@RequestParam long accountId){
+    public String create(@RequestParam long number, @RequestParam long accountId){
         accountCrudRepository.findById(accountId).orElseThrow(NoSuchElementException::new);
-        Bill bill = new Bill(accountId);
+        Bill bill = new Bill(number, accountId);
         billCrudRepository.save(bill);
         return "creation success";
     }
 
-    @GetMapping("/bill/{billId}/balance")
+    @GetMapping("/bill/balance/{billId}/")
     @Transactional(isolation = Isolation.READ_COMMITTED,
             propagation = Propagation.REQUIRED,
             rollbackFor = RollbackException.class)
@@ -64,9 +63,4 @@ public class BillOperationController {
         Bill bill = billCrudRepository.findById(billId).orElseThrow(NoSuchElementException::new);
         return bill.getBalance();
     }
-
-
-
-
-
 }
