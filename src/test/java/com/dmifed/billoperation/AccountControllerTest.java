@@ -3,6 +3,7 @@ package com.dmifed.billoperation;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -32,37 +33,49 @@ class AccountControllerTest {
     @MockBean
     private AccountController accountController;
 
-    private String testAccountJson = "{\"name\":\"vas\",\"email\":\"mail@vas\"}";
-    private Account mockAccount = new Account("vas", "mail@vas");
-
-
-
     @Test
     void create() throws Exception {
+        Account mockAccount = new Account("vas", "mail@vas");
         Mockito.when(accountController.create(Mockito.anyString(), Mockito.anyString()))
                 .thenReturn(mockAccount);
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/account/create?name=\"vas\"&email=\"mail@vas\"")
-                .accept(MediaType.APPLICATION_JSON).content(testAccountJson)
-                .contentType(MediaType.APPLICATION_JSON);
+                .accept(MediaType.APPLICATION_JSON);
 
         MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
         MockHttpServletResponse response = result.getResponse();
-
         assertEquals(HttpStatus.OK.value(), response.getStatus());
     }
 
     @Test
-    void update() {
+    void update() throws Exception {
+        Account mockAccount = new Account("vas", "new@new");
+        Mockito.when(accountController.update(Mockito.anyLong(), Mockito.anyString()))
+                .thenReturn(mockAccount);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/account/update/1/?email=\"new@new\"")
+                .accept(MediaType.APPLICATION_JSON);
+
+        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+        MockHttpServletResponse response = result.getResponse();
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
     }
 
     @Test
-    void getAccount() {
-    }
+    void getAccount() throws Exception{
+        Account mockAccount = new Account("vas", "mail@vas");
+        Mockito.when(accountController.getAccount(Mockito.anyLong())).thenReturn(mockAccount);
 
-    @Test
-    void delete() {
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/account/1/")
+                .accept(MediaType.APPLICATION_JSON);
+
+        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+        String jsonExpected = "{\"name\":\"vas\",\"email\":\"mail@vas\"}";
+        JSONAssert.assertEquals(jsonExpected, result.getResponse()
+                .getContentAsString(), false);
+
     }
 }

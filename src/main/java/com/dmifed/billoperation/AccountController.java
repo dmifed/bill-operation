@@ -41,10 +41,12 @@ public class AccountController {
     @PostMapping("/account/update/{accountId}/")
     @Transactional(isolation = Isolation.READ_COMMITTED,
             propagation = Propagation.REQUIRED)
-    public String update (@PathVariable long accountId, String email){
+    public Account update (@PathVariable long accountId, String email){
         Account account = accountCrudRepository.findById(accountId).orElseThrow(NoSuchElementException::new);
         account.setEmail(email);
-        return "update success";
+        log.info("update email account " + email);
+        accountCrudRepository.save(account);
+        return account;
     }
 
     @GetMapping("/account/{accountId}/")
@@ -54,11 +56,4 @@ public class AccountController {
         return accountCrudRepository.findById(accountId).orElseThrow(NoSuchElementException::new);
     }
 
-    @GetMapping("/account/delete/{accountId}")
-    @Transactional(isolation = Isolation.READ_COMMITTED,
-            propagation = Propagation.REQUIRED)
-    public String delete (@PathVariable long accountId){
-        accountCrudRepository.deleteById(accountId);
-        return "account #"+ accountId + " has been deleted";
-    }
 }

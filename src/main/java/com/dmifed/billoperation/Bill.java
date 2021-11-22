@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 /**
  * Created by DIMA, on 18.11.2021
@@ -37,4 +38,19 @@ public class Bill {
     }
 
     protected Bill(){}
+
+/*    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Bill bill = (Bill) o;
+        return number == bill.number &&
+                user == bill.user &&
+                balance == bill.balance;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(number, user, balance);
+    }*/
 }

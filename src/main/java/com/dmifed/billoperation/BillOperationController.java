@@ -23,11 +23,11 @@ public class BillOperationController {
     @Autowired
     private AccountCrudRepository accountCrudRepository;
 
-    @GetMapping("/bill/withdrawal/{billId}/")
+    @PostMapping("/bill/withdrawal/")
     @Transactional(isolation = Isolation.READ_COMMITTED,
             propagation = Propagation.REQUIRED)
-    public Bill withdrawal (@PathVariable @RequestParam long id, @RequestParam long amount) throws NotEnoughMoneyException{
-        Bill bill = billCrudRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    public Bill withdrawal (@RequestParam long number, @RequestParam long amount) throws NotEnoughMoneyException{
+        Bill bill = billCrudRepository.findBillByNumber(number).orElseThrow(NoSuchElementException::new);
         long balance = bill.getBalance();
         if(balance >= amount){
             bill.setBalance(balance-amount);
@@ -38,23 +38,25 @@ public class BillOperationController {
         return bill;
     }
 
-    @GetMapping("/bill/refill/{billId}/")
+    @PostMapping("/bill/refill/")
     @Transactional(isolation = Isolation.READ_COMMITTED,
             propagation = Propagation.REQUIRED)
-    public Bill refill (@PathVariable @RequestParam long id, @RequestParam long amount){
-        Bill bill = billCrudRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    public Bill refill (@RequestParam long number, @RequestParam long amount){
+        Bill bill = billCrudRepository.findBillByNumber(number).orElseThrow(NoSuchElementException::new);
         long balance = bill.getBalance();
         bill.setBalance(balance+amount);
+        billCrudRepository.save(bill);
         return bill;
     }
+
     @PostMapping("/bill/create")
     @Transactional(isolation = Isolation.READ_COMMITTED,
             propagation = Propagation.REQUIRED)
-    public String create(@RequestParam long number, @RequestParam long user){
+    public Bill create(@RequestParam long number, @RequestParam long user){
         accountCrudRepository.findById(user).orElseThrow(NoSuchElementException::new);
         Bill bill = new Bill(number, user);
         billCrudRepository.save(bill);
-        return "creation success";
+        return bill;
     }
 
     @GetMapping("/bill/balance/{id}/")
