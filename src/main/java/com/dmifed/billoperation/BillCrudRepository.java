@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface BillCrudRepository extends CrudRepository<Bill, Long> {
     Bill findBillByNumber(long number);
-    List<Bill> findBillsByAccountId(long accountId);
+    List<Bill> findBillByUser(long id);
 
 }

@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.NoSuchElementException;
+import java.util.logging.Logger;
 
 /**
  * Created by DIMA, on 19.11.2021
@@ -15,14 +16,15 @@ import java.util.NoSuchElementException;
 @RestController
 public class AccountController {
 
+    Logger log = Logger.getGlobal();
+
     @Autowired
     private AccountCrudRepository accountCrudRepository;
 
     @PostMapping("/account/create")
     @Transactional(isolation = Isolation.READ_COMMITTED,
-            propagation = Propagation.REQUIRED,
-            rollbackFor = RollbackException.class)
-    public String create(@RequestParam String name, @RequestParam(required = false) String email){
+            propagation = Propagation.REQUIRED)
+    public Account create(@RequestParam String name, @RequestParam(required = false) String email){
         Account account;
         if(email != null){
             account = new Account(name, email);
@@ -30,15 +32,15 @@ public class AccountController {
             account = new Account(name);
         }
         accountCrudRepository.save(account);
-        return "creation success";
+        log.info("created account " + name);
+        return account;
     }
 
 
 
     @PostMapping("/account/update/{accountId}/")
     @Transactional(isolation = Isolation.READ_COMMITTED,
-            propagation = Propagation.REQUIRED,
-            rollbackFor = RollbackException.class)
+            propagation = Propagation.REQUIRED)
     public String update (@PathVariable long accountId, String email){
         Account account = accountCrudRepository.findById(accountId).orElseThrow(NoSuchElementException::new);
         account.setEmail(email);
@@ -47,16 +49,14 @@ public class AccountController {
 
     @GetMapping("/account/{accountId}/")
     @Transactional(isolation = Isolation.READ_COMMITTED,
-            propagation = Propagation.REQUIRED,
-            rollbackFor = RollbackException.class)
+            propagation = Propagation.REQUIRED)
     public Account getAccount (@PathVariable long accountId){
         return accountCrudRepository.findById(accountId).orElseThrow(NoSuchElementException::new);
     }
 
     @GetMapping("/account/delete/{accountId}")
     @Transactional(isolation = Isolation.READ_COMMITTED,
-            propagation = Propagation.REQUIRED,
-            rollbackFor = RollbackException.class)
+            propagation = Propagation.REQUIRED)
     public String delete (@PathVariable long accountId){
         accountCrudRepository.deleteById(accountId);
         return "account #"+ accountId + " has been deleted";
