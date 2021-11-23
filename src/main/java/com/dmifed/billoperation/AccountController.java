@@ -24,19 +24,13 @@ public class AccountController {
     @PostMapping("/account/create")
     @Transactional(isolation = Isolation.READ_COMMITTED,
             propagation = Propagation.REQUIRED)
-    public Account create(@RequestParam String name, @RequestParam(required = false) String email){
-        Account account;
-        if(email != null){
-            account = new Account(name, email);
-        }else {
-            account = new Account(name);
-        }
+    public Account create(@RequestBody Account account){
+        //Account account = new Account(name, email);
+        //System.out.println(account.getName() + " " + account.getEmail());
         accountCrudRepository.save(account);
-        log.info("created account " + name);
+        //log.info("created account " + name);
         return account;
     }
-
-
 
     @PostMapping("/account/update/{accountId}/")
     @Transactional(isolation = Isolation.READ_COMMITTED,

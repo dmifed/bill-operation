@@ -36,12 +36,13 @@ class BillOperationControllerTest {
 
     @Test
     void withdrawal() throws NotEnoughMoneyException {
+        String testBillJson = "{\"number\":1010,\"user\":1,\"balance\":10}";
         Bill mockBill = new Bill(1010, 1);
         Mockito.when(billController.withdrawal(Mockito.anyLong(), Mockito.anyLong()))
                 .thenReturn(mockBill);
         assertThrows(NotEnoughMoneyException.class, ()->{
-            RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/bill/withdrawal/?number=1010&amount=100")
-                    .accept(MediaType.APPLICATION_JSON);
+            RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/bill/withdrawal/")
+                    .accept(MediaType.APPLICATION_JSON).contentType(testBillJson).contentType(MediaType.APPLICATION_JSON);
             MvcResult result = mockMvc.perform(requestBuilder).andReturn();
             System.out.println("result :" + result.getResponse().getContentAsString());
         });
@@ -55,8 +56,8 @@ class BillOperationControllerTest {
         Mockito.when(billController.refill(Mockito.anyLong(), Mockito.anyLong()))
                 .thenReturn(mockBill);
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/bill/refill/?number=1010&amount=10")
-                .accept(MediaType.APPLICATION_JSON);
+                .post("/bill/refill/")
+                .accept(MediaType.APPLICATION_JSON).content(testBillJson).contentType(MediaType.APPLICATION_JSON);
 
         MvcResult result = mockMvc.perform(requestBuilder).andReturn();
         MockHttpServletResponse response = result.getResponse();
@@ -66,13 +67,14 @@ class BillOperationControllerTest {
 
     @Test
     void create() throws Exception {
+        String testBillJson = "{\"number\":1010,\"user\":1}";
         Bill mockBill = new Bill(1010, 10);
         Mockito.when(billController.create(Mockito.anyLong(), Mockito.anyLong()))
                 .thenReturn(mockBill);
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/bill/create?number=1010&user=1")
-                .accept(MediaType.APPLICATION_JSON);
+                .accept(MediaType.APPLICATION_JSON).content(testBillJson).contentType(MediaType.APPLICATION_JSON);;
 
         MvcResult result = mockMvc.perform(requestBuilder).andReturn();
         MockHttpServletResponse response = result.getResponse();

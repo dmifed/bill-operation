@@ -35,13 +35,14 @@ class AccountControllerTest {
 
     @Test
     void create() throws Exception {
+        String testAccountJson = "{\"name\":\"vas\",\"email\":\"mail@vas\"}";
         Account mockAccount = new Account("vas", "mail@vas");
-        Mockito.when(accountController.create(Mockito.anyString(), Mockito.anyString()))
+        Mockito.when(accountController.create(Mockito.any()))
                 .thenReturn(mockAccount);
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/account/create?name=\"vas\"&email=\"mail@vas\"")
-                .accept(MediaType.APPLICATION_JSON);
+                .post("/account/create/")
+                .accept(MediaType.APPLICATION_JSON).content(testAccountJson).contentType(MediaType.APPLICATION_JSON);
 
         MvcResult result = mockMvc.perform(requestBuilder).andReturn();
         MockHttpServletResponse response = result.getResponse();
@@ -51,12 +52,13 @@ class AccountControllerTest {
     @Test
     void update() throws Exception {
         Account mockAccount = new Account("vas", "new@new");
+        String testAccountJson = "{\"name\":\"vas\",\"email\":\"new@new\"}";
         Mockito.when(accountController.update(Mockito.anyLong(), Mockito.anyString()))
                 .thenReturn(mockAccount);
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/account/update/1/?email=\"new@new\"")
-                .accept(MediaType.APPLICATION_JSON);
+                .post("/account/update/1/")
+                .accept(MediaType.APPLICATION_JSON).content(testAccountJson).contentType(MediaType.APPLICATION_JSON);;
 
         MvcResult result = mockMvc.perform(requestBuilder).andReturn();
         MockHttpServletResponse response = result.getResponse();
