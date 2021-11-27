@@ -40,10 +40,9 @@ class BillOperationControllerTest {
         Mockito.when(billController.withdrawal(Mockito.anyLong(), Mockito.anyLong()))
                 .thenReturn(mockBill);
         assertThrows(NotEnoughMoneyException.class, ()->{
-            RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/bill/withdrawal/?number=1010&amount=100")
+            RequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .post("/bill/withdrawal/?number=1010&amount=100")
                     .accept(MediaType.APPLICATION_JSON);
-            MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-            System.out.println("result :" + result.getResponse().getContentAsString());
         });
     }
 
@@ -55,7 +54,7 @@ class BillOperationControllerTest {
         Mockito.when(billController.refill(Mockito.anyLong(), Mockito.anyLong()))
                 .thenReturn(mockBill);
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/bill/refill/?number=1010&amount=10")
+                .post("/bill/refill/?number=1010&amount=20")
                 .accept(MediaType.APPLICATION_JSON);
 
         MvcResult result = mockMvc.perform(requestBuilder).andReturn();
