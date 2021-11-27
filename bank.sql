@@ -33,14 +33,16 @@ ENGINE = InnoDB;
 -- Table `bank`.`bills`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `bank`.`bills` (
-  `number` BIGINT(19) UNSIGNED NOT NULL AUTO_INCREMENT,
+   `id` BIGINT(19) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `number` BIGINT(19) UNSIGNED NOT NULL,
   `user` BIGINT(19) UNSIGNED NOT NULL,
   `balance` BIGINT(19) NULL,
-  PRIMARY KEY (`number`),
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  UNIQUE INDEX `user_UNIQUE` (`user` ASC) VISIBLE,
   UNIQUE INDEX `number_UNIQUE` (`number` ASC) VISIBLE,
-  UNIQUE INDEX `userAccountId_UNIQUE` (`userAccountId` ASC) VISIBLE,
-  CONSTRAINT `userAccountId`
-    FOREIGN KEY (`userAccountId`)
+  CONSTRAINT `user`
+    FOREIGN KEY (`user`)
     REFERENCES `bank`.`accounts` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
